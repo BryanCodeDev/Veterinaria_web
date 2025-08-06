@@ -4,7 +4,7 @@ import { Star, MapPin, Phone } from 'lucide-react';
 
 const HeroSection = ({ onBookingClick }) => {
   const stats = [
-    { number: "10+", label: "Años de Experiencia" },
+    { number: "1+", label: "Años de Experiencia" },
     { number: "1000+", label: "Clientes Satisfechos" },
     { number: "5★", label: "Calificación Promedio" }
   ];
