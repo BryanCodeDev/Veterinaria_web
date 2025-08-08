@@ -1,6 +1,6 @@
 // src/components/sections/BookingForm.jsx
 import React, { useState } from 'react';
-import { ArrowLeft, X, Check, ChevronRight, Heart, User, Phone, Mail, MessageSquare } from 'lucide-react';
+import { ArrowLeft, X, Check, ChevronRight, Heart, User, MessageSquare } from 'lucide-react';
 import { services } from '../../data/services';
 import { timeSlots, weekendTimeSlots, PET_TYPES, PET_SIZES } from '../../utils/constants';
 
