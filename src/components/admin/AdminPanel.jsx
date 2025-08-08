@@ -10,9 +10,11 @@ import {
   Eye, 
   EyeOff,
   LogOut,
-  Shield,
-  Users,
-  X
+  X,
+  Heart,
+  Stethoscope,
+  Star, // Reemplazando PawPrint con Star
+  Activity
 } from 'lucide-react';
 
 const AdminPanel = ({ appointments, onDeleteAppointment, onClose }) => {
@@ -107,23 +109,36 @@ const AdminPanel = ({ appointments, onDeleteAppointment, onClose }) => {
     }
   };
 
+  const getPetIcon = (petType) => {
+    const icons = {
+      perro: '🐕',
+      gato: '🐱',
+      conejo: '🐰',
+      hamster: '🐹',
+      ave: '🐦',
+      otro: '🐾'
+    };
+    return icons[petType] || '🐾';
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="w-full min-h-screen bg-white">
         
         {/* Login Form */}
         {!isAuthenticated ? (
-          <div className="min-h-screen bg-gradient-to-br from-amber-50 to-orange-100 flex flex-col">
+          <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100 flex flex-col">
             {/* Header */}
             <div className="bg-white shadow-sm border-b border-gray-200 p-4 sm:p-6 lg:p-8">
               <div className="max-w-7xl mx-auto flex flex-col sm:flex-row sm:justify-between sm:items-center">
                 <div className="flex items-center mb-4 sm:mb-0">
-                  <div className="bg-amber-100 w-12 h-12 sm:w-14 sm:h-14 rounded-full flex items-center justify-center mr-4">
-                    <Shield className="h-6 w-6 sm:h-7 sm:w-7 text-amber-600" />
+                  <div className="bg-teal-100 w-12 h-12 sm:w-14 sm:h-14 rounded-full flex items-center justify-center mr-4 relative">
+                    <Heart className="h-6 w-6 sm:h-7 sm:w-7 text-teal-600" />
+                    <Stethoscope className="h-3 w-3 text-teal-800 absolute -bottom-1 -right-1" />
                   </div>
                   <div>
-                    <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900">Panel de Administración</h1>
-                    <p className="text-sm sm:text-base text-gray-600">Iniciar sesión para gestionar tu barbería</p>
+                    <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900">Panel Veterinario</h1>
+                    <p className="text-sm sm:text-base text-gray-600">Gestión de citas - PetSpa Veterinaria</p>
                   </div>
                 </div>
                 <button
@@ -140,14 +155,15 @@ const AdminPanel = ({ appointments, onDeleteAppointment, onClose }) => {
               <div className="w-full max-w-md">
                 <div className="bg-white rounded-2xl shadow-xl p-6 sm:p-8 border border-gray-200">
                   <div className="text-center mb-8">
-                    <div className="bg-amber-500 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <Shield className="h-8 w-8 text-white" />
+                    <div className="bg-teal-500 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 relative">
+                      <Heart className="h-8 w-8 text-white" />
+                      <Stethoscope className="h-4 w-4 text-teal-200 absolute -bottom-1 -right-1" />
                     </div>
-                    <h2 className="text-2xl font-bold text-gray-900 mb-2">Acceso Administrativo</h2>
-                    <p className="text-gray-600">Ingresa tus credenciales para continuar</p>
+                    <h2 className="text-2xl font-bold text-gray-900 mb-2">🐾 Acceso Veterinario</h2>
+                    <p className="text-gray-600">Panel de gestión para profesionales</p>
                   </div>
 
-                  <form onSubmit={handleLogin} className="space-y-6">
+                  <div className="space-y-6">
                     {errors.general && (
                       <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
                         {errors.general}
@@ -156,14 +172,14 @@ const AdminPanel = ({ appointments, onDeleteAppointment, onClose }) => {
 
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Usuario
+                        Usuario Veterinario
                       </label>
                       <input
                         type="text"
                         name="username"
                         value={adminCredentials.username}
                         onChange={handleInputChange}
-                        className={`w-full px-4 py-3 text-base border rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-colors ${
+                        className={`w-full px-4 py-3 text-base border rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-colors ${
                           errors.username ? 'border-red-500' : 'border-gray-300'
                         }`}
                         placeholder="Ingresa tu usuario"
@@ -183,7 +199,7 @@ const AdminPanel = ({ appointments, onDeleteAppointment, onClose }) => {
                           name="password"
                           value={adminCredentials.password}
                           onChange={handleInputChange}
-                          className={`w-full px-4 py-3 text-base border rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent pr-12 transition-colors ${
+                          className={`w-full px-4 py-3 text-base border rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent pr-12 transition-colors ${
                             errors.password ? 'border-red-500' : 'border-gray-300'
                           }`}
                           placeholder="Ingresa tu contraseña"
@@ -202,16 +218,17 @@ const AdminPanel = ({ appointments, onDeleteAppointment, onClose }) => {
                     </div>
                     
                     <button
-                      type="submit"
-                      className="w-full bg-amber-500 text-white px-4 py-3 rounded-lg font-bold hover:bg-amber-600 transition-colors flex items-center justify-center text-base shadow-lg"
+                      type="button"
+                      onClick={handleLogin}
+                      className="w-full bg-teal-500 text-white px-4 py-3 rounded-lg font-bold hover:bg-teal-600 transition-colors flex items-center justify-center text-base shadow-lg"
                     >
-                      <Shield className="h-5 w-5 mr-2" />
+                      <Heart className="h-5 w-5 mr-2" />
                       Acceder al Panel
                     </button>
-                  </form>
+                  </div>
 
-                  <div className="text-center text-sm text-gray-500 mt-6 p-4 bg-gray-50 rounded-lg">
-                    <p><strong>Credenciales de prueba:</strong></p>
+                  <div className="text-center text-sm text-gray-500 mt-6 p-4 bg-teal-50 rounded-lg border border-teal-100">
+                    <p><strong>🩺 Credenciales de prueba:</strong></p>
                     <p className="mt-1">Usuario: <code className="bg-white px-2 py-1 rounded text-xs">camilo</code></p>
                     <p className="mt-1">Contraseña: <code className="bg-white px-2 py-1 rounded text-xs">camilo123</code></p>
                   </div>
@@ -223,27 +240,30 @@ const AdminPanel = ({ appointments, onDeleteAppointment, onClose }) => {
           /* Admin Dashboard */
           <div className="min-h-screen bg-gray-50">
             {/* Header */}
-            <div className="bg-gradient-to-r from-amber-400 to-amber-500 shadow-lg">
+            <div className="bg-gradient-to-r from-teal-600 to-teal-800 shadow-lg">
               <div className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
                 <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center">
-                  <div className="flex items-center text-black mb-4 sm:mb-0">
-                    <Users className="h-6 w-6 sm:h-7 sm:w-7 mr-3" />
+                  <div className="flex items-center text-white mb-4 sm:mb-0">
+                    <div className="flex items-center mr-4">
+                      <Heart className="h-6 w-6 sm:h-7 sm:w-7 mr-2 text-teal-300" />
+                      <Stethoscope className="h-5 w-5 sm:h-6 sm:w-6 text-teal-200" />
+                    </div>
                     <div>
-                      <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold">Panel de Administración</h1>
-                      <p className="text-sm sm:text-base opacity-80">Gestiona las citas de tu barbería</p>
+                      <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold">Panel Veterinario</h1>
+                      <p className="text-sm sm:text-base text-teal-200">PetSpa Veterinaria - Gestión de Citas</p>
                     </div>
                   </div>
                   <div className="flex items-center space-x-2">
                     <button
                       onClick={handleLogout}
-                      className="bg-black bg-opacity-20 text-black px-4 py-2 rounded-lg hover:bg-opacity-30 transition-colors flex items-center text-sm font-medium"
+                      className="bg-white bg-opacity-20 text-white px-4 py-2 rounded-lg hover:bg-opacity-30 transition-colors flex items-center text-sm font-medium"
                     >
                       <LogOut className="h-4 w-4 mr-2" />
                       <span className="hidden sm:inline">Cerrar Sesión</span>
                     </button>
                     <button
                       onClick={onClose}
-                      className="bg-black bg-opacity-20 text-black p-2 rounded-lg hover:bg-opacity-30 transition-colors"
+                      className="bg-white bg-opacity-20 text-white p-2 rounded-lg hover:bg-opacity-30 transition-colors"
                     >
                       <X className="h-5 w-5" />
                     </button>
@@ -254,14 +274,14 @@ const AdminPanel = ({ appointments, onDeleteAppointment, onClose }) => {
 
             <div className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
               {/* Stats Cards */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6 mb-6 lg:mb-8">
-                <div className="bg-white bg-gradient-to-br from-blue-50 to-blue-100 p-4 sm:p-6 rounded-xl border border-blue-200 hover:shadow-lg transition-shadow">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 mb-6 lg:mb-8">
+                <div className="bg-white bg-gradient-to-br from-teal-50 to-teal-100 p-4 sm:p-6 rounded-xl border border-teal-200 hover:shadow-lg transition-shadow">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-blue-600 text-sm font-medium mb-1">Total Citas</p>
-                      <p className="text-2xl sm:text-3xl lg:text-4xl font-bold text-blue-900">{appointments.length}</p>
+                      <p className="text-teal-600 text-sm font-medium mb-1">Total Citas</p>
+                      <p className="text-2xl sm:text-3xl lg:text-4xl font-bold text-teal-900">{appointments.length}</p>
                     </div>
-                    <div className="bg-blue-500 p-3 rounded-full">
+                    <div className="bg-teal-500 p-3 rounded-full">
                       <Calendar className="h-6 w-6 lg:h-7 lg:w-7 text-white" />
                     </div>
                   </div>
@@ -281,7 +301,7 @@ const AdminPanel = ({ appointments, onDeleteAppointment, onClose }) => {
                   </div>
                 </div>
 
-                <div className="bg-white bg-gradient-to-br from-green-50 to-green-100 p-4 sm:p-6 rounded-xl border border-green-200 hover:shadow-lg transition-shadow sm:col-span-2 lg:col-span-1">
+                <div className="bg-white bg-gradient-to-br from-green-50 to-green-100 p-4 sm:p-6 rounded-xl border border-green-200 hover:shadow-lg transition-shadow">
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-green-600 text-sm font-medium mb-1">Hoy</p>
@@ -290,7 +310,21 @@ const AdminPanel = ({ appointments, onDeleteAppointment, onClose }) => {
                       </p>
                     </div>
                     <div className="bg-green-500 p-3 rounded-full">
-                      <User className="h-6 w-6 lg:h-7 lg:w-7 text-white" />
+                      <Activity className="h-6 w-6 lg:h-7 lg:w-7 text-white" />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-white bg-gradient-to-br from-blue-50 to-blue-100 p-4 sm:p-6 rounded-xl border border-blue-200 hover:shadow-lg transition-shadow">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-blue-600 text-sm font-medium mb-1">Mascotas</p>
+                      <p className="text-2xl sm:text-3xl lg:text-4xl font-bold text-blue-900">
+                        {appointments.length}
+                      </p>
+                    </div>
+                    <div className="bg-blue-500 p-3 rounded-full">
+                      <Star className="h-6 w-6 lg:h-7 lg:w-7 text-white" />
                     </div>
                   </div>
                 </div>
@@ -298,44 +332,66 @@ const AdminPanel = ({ appointments, onDeleteAppointment, onClose }) => {
 
               {/* Appointments List */}
               <div className="bg-white border border-gray-200 rounded-xl shadow-lg overflow-hidden">
-                <div className="px-4 sm:px-6 py-4 bg-gray-50 border-b border-gray-200">
-                  <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 flex items-center">
-                    <Calendar className="h-5 w-5 sm:h-6 sm:w-6 mr-2" />
-                    Citas Agendadas ({appointments.length})
+                <div className="px-4 sm:px-6 py-4 bg-gradient-to-r from-teal-50 to-teal-100 border-b border-teal-200">
+                  <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-teal-900 flex items-center">
+                    <Star className="h-5 w-5 sm:h-6 sm:w-6 mr-2" />
+                    Citas Veterinarias ({appointments.length})
                   </h3>
+                  <p className="text-sm text-teal-600 mt-1">Gestión de citas para mascotas</p>
                 </div>
 
                 {appointments.length > 0 ? (
                   <div className="divide-y divide-gray-200">
                     {appointments.map((appointment) => (
-                      <div key={appointment.id} className="p-4 sm:p-6 hover:bg-gray-50 transition-colors">
+                      <div key={appointment.id} className="p-4 sm:p-6 hover:bg-teal-50 transition-colors">
                         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
                           <div className="flex-1 space-y-3">
                             <div className="flex items-start sm:items-center space-x-3">
-                              <div className="bg-amber-100 p-2 rounded-full flex-shrink-0">
-                                <User className="h-4 w-4 sm:h-5 sm:w-5 text-amber-600" />
+                              <div className="bg-teal-100 p-2 rounded-full flex-shrink-0">
+                                <User className="h-4 w-4 sm:h-5 sm:w-5 text-teal-600" />
                               </div>
                               <div className="flex-1 min-w-0">
                                 <h4 className="font-semibold text-gray-900 text-base sm:text-lg truncate">{appointment.name}</h4>
                                 <div className="flex items-center text-sm text-gray-600 mt-1">
                                   <Phone className="h-3 w-3 mr-1 flex-shrink-0" />
                                   <span className="truncate">{appointment.phone}</span>
+                                  {appointment.email && (
+                                    <>
+                                      <span className="mx-2">•</span>
+                                      <span className="truncate">{appointment.email}</span>
+                                    </>
+                                  )}
                                 </div>
                               </div>
                             </div>
                             
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
-                              <div className="font-medium text-gray-900 bg-gray-50 px-3 py-2 rounded-lg">
-                                <span className="text-gray-600">Servicio: </span>{appointment.service}
+                            {/* Pet Information */}
+                            <div className="bg-gradient-to-r from-teal-50 to-cyan-50 border border-teal-100 rounded-lg p-3">
+                              <div className="flex items-center space-x-2 mb-2">
+                                <span className="text-lg">{getPetIcon(appointment.petType)}</span>
+                                <span className="font-semibold text-teal-900">{appointment.petName}</span>
+                                <span className="text-sm text-teal-600">
+                                  ({appointment.petType} - {appointment.petSize})
+                                </span>
                               </div>
+                              <div className="text-sm text-teal-700">
+                                <strong>Servicio:</strong> {appointment.service}
+                              </div>
+                            </div>
+                            
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
                               <div className="flex items-center text-gray-600 bg-gray-50 px-3 py-2 rounded-lg">
                                 <Calendar className="h-3 w-3 mr-2 flex-shrink-0" />
-                                <span className="truncate">{formatDate(appointment.date)} - {appointment.time}</span>
+                                <span className="truncate">{formatDate(appointment.date)}</span>
+                              </div>
+                              <div className="flex items-center text-gray-600 bg-gray-50 px-3 py-2 rounded-lg">
+                                <Clock className="h-3 w-3 mr-2 flex-shrink-0" />
+                                <span>{appointment.time}</span>
                               </div>
                             </div>
 
                             {appointment.message && (
-                              <div className="flex items-start text-sm text-gray-600 bg-blue-50 p-3 rounded-lg">
+                              <div className="flex items-start text-sm text-gray-600 bg-blue-50 p-3 rounded-lg border border-blue-100">
                                 <MessageSquare className="h-4 w-4 mr-2 mt-0.5 flex-shrink-0 text-blue-500" />
                                 <span className="break-words">{appointment.message}</span>
                               </div>
@@ -360,11 +416,50 @@ const AdminPanel = ({ appointments, onDeleteAppointment, onClose }) => {
                   </div>
                 ) : (
                   <div className="text-center py-16 px-4">
-                    <Calendar className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-                    <h3 className="text-lg sm:text-xl font-medium text-gray-900 mb-2">No hay citas agendadas</h3>
-                    <p className="text-gray-500 max-w-md mx-auto">Las citas aparecerán aquí cuando los clientes las agenden.</p>
+                    <div className="mb-4">
+                      <Star className="h-16 w-16 text-gray-400 mx-auto mb-2" />
+                      <div className="text-3xl">🐾</div>
+                    </div>
+                    <h3 className="text-lg sm:text-xl font-medium text-gray-900 mb-2">No hay citas veterinarias</h3>
+                    <p className="text-gray-500 max-w-md mx-auto">
+                      Las citas para mascotas aparecerán aquí cuando los propietarios las agenden.
+                    </p>
                   </div>
                 )}
+              </div>
+
+              {/* Quick Stats */}
+              <div className="mt-6 lg:mt-8 bg-white rounded-xl shadow-lg p-4 sm:p-6 border border-gray-200">
+                <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center">
+                  <Activity className="h-5 w-5 mr-2 text-teal-600" />
+                  Estadísticas Rápidas
+                </h3>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                  <div className="text-center p-3 bg-teal-50 rounded-lg border border-teal-100">
+                    <div className="text-2xl mb-2">🐕</div>
+                    <div className="text-xs sm:text-sm font-medium text-teal-900">
+                      {appointments.filter(apt => apt.petType === 'perro').length} Perros
+                    </div>
+                  </div>
+                  <div className="text-center p-3 bg-blue-50 rounded-lg border border-blue-100">
+                    <div className="text-2xl mb-2">🐱</div>
+                    <div className="text-xs sm:text-sm font-medium text-blue-900">
+                      {appointments.filter(apt => apt.petType === 'gato').length} Gatos
+                    </div>
+                  </div>
+                  <div className="text-center p-3 bg-purple-50 rounded-lg border border-purple-100">
+                    <div className="text-2xl mb-2">🛁</div>
+                    <div className="text-xs sm:text-sm font-medium text-purple-900">
+                      {appointments.filter(apt => apt.service.toLowerCase().includes('baño')).length} Baños
+                    </div>
+                  </div>
+                  <div className="text-center p-3 bg-green-50 rounded-lg border border-green-100">
+                    <div className="text-2xl mb-2">🩺</div>
+                    <div className="text-xs sm:text-sm font-medium text-green-900">
+                      {appointments.filter(apt => apt.service.toLowerCase().includes('consulta')).length} Consultas
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>

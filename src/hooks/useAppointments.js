@@ -5,58 +5,108 @@ import { useState } from 'react';
 const initialAppointments = [
   {
     id: 1,
-    name: "Juan Pérez",
-    phone: "3101234567",
-    service: "Corte y Barba (Perfilada)",
+    name: "María González",
+    phone: "3201234567",
+    email: "maria.gonzalez@email.com",
+    petName: "Max",
+    petType: "perro",
+    petSize: "mediano",
+    service: "Baño Premium + Corte de Uñas",
     date: "2025-08-10",
     time: "14:00",
-    message: "Prefiero corte clásico, no muy corto a los lados",
+    message: "Max es muy nervioso con el agua, por favor tener paciencia",
     status: "pending",
     createdAt: "2025-08-06T10:30:00Z"
   },
   {
     id: 2,
-    name: "Carlos López",
+    name: "Carlos Rodríguez",
     phone: "3109876543",
-    service: "Corte Básico",
+    email: "",
+    petName: "Luna",
+    petType: "gato",
+    petSize: "pequeno",
+    service: "Consulta Veterinaria General",
     date: "2025-08-11",
     time: "16:30",
-    message: "Primera vez en la barbería, espero el mejor servicio",
+    message: "Primera consulta, Luna tiene 3 años y está al día con vacunas",
     status: "pending",
     createdAt: "2025-08-06T11:15:00Z"
   },
   {
     id: 3,
-    name: "Miguel Rodríguez",
+    name: "Ana Martínez",
     phone: "3158765432",
-    service: "Corte y Barba + Exfoliación y Mascarilla Puntos Negros",
+    email: "ana.martinez@email.com",
+    petName: "Rocky",
+    petType: "perro",
+    petSize: "grande",
+    service: "Spa Completo",
     date: "2025-08-12",
     time: "10:00",
-    message: "Quiero probar el servicio premium completo",
+    message: "Rocky necesita tratamiento especial para su piel sensible",
     status: "confirmed",
     createdAt: "2025-08-05T14:20:00Z"
   },
   {
     id: 4,
-    name: "Andrea Torres",
+    name: "Diego Torres",
     phone: "3209876543",
-    service: "Corte y Cejas",
+    email: "diego.torres@email.com",
+    petName: "Coco",
+    petType: "conejo",
+    petSize: "muy_pequeno",
+    service: "Corte de Uñas",
     date: "2025-08-06",
     time: "15:30",
-    message: "",
+    message: "Primera vez que viene Coco",
     status: "pending",
     createdAt: "2025-08-06T09:00:00Z"
   },
   {
     id: 5,
-    name: "Luis Martínez",
+    name: "Laura Jiménez",
     phone: "3187654321",
-    service: "Corte Básico",
+    email: "laura.jimenez@email.com",
+    petName: "Bella",
+    petType: "gato",
+    petSize: "mediano",
+    service: "Baño Medicado",
     date: "2025-08-06",
     time: "17:00",
-    message: "Corte ejecutivo por favor",
+    message: "Bella tiene dermatitis, necesita champú especial",
     status: "confirmed",
     createdAt: "2025-08-05T16:30:00Z"
+  },
+  {
+    id: 6,
+    name: "Roberto Silva",
+    phone: "3156789012",
+    email: "",
+    petName: "Toby",
+    petType: "perro",
+    petSize: "pequeno",
+    service: "Vacunación Completa",
+    date: "2025-08-13",
+    time: "11:00",
+    message: "Toby necesita sus vacunas anuales",
+    status: "pending",
+    createdAt: "2025-08-07T08:45:00Z"
+  },
+  {
+    id: 7,
+    name: "Patricia López",
+    phone: "3145678901",
+    email: "patricia.lopez@email.com",
+    petName: "Canela",
+    petType: "hamster",
+    petSize: "muy_pequeno",
+    service: "Consulta Veterinaria General",
+    date: "2025-08-14",
+    time: "09:30",
+    message: "Canela ha estado menos activa últimamente",
+    status: "pending",
+    createdAt: "2025-08-07T12:20:00Z"
   }
 ];
 
@@ -102,6 +152,11 @@ export const useAppointments = () => {
     return appointments.filter(apt => apt.status === status);
   };
 
+  // Obtener citas por tipo de mascota
+  const getAppointmentsByPetType = (petType) => {
+    return appointments.filter(apt => apt.petType === petType);
+  };
+
   // Obtener citas de hoy
   const getTodayAppointments = () => {
     const today = new Date().toISOString().split('T')[0];
@@ -122,15 +177,36 @@ export const useAppointments = () => {
     });
   };
 
+  // Obtener citas próximas (próximos 7 días)
+  const getUpcomingAppointments = () => {
+    const today = new Date();
+    const nextWeek = new Date(today);
+    nextWeek.setDate(today.getDate() + 7);
+
+    return appointments.filter(apt => {
+      const aptDate = new Date(apt.date);
+      return aptDate >= today && aptDate <= nextWeek;
+    });
+  };
+
   // Estadísticas
   const getStats = () => {
+    const petTypeStats = {};
+    appointments.forEach(apt => {
+      if (apt.petType) {
+        petTypeStats[apt.petType] = (petTypeStats[apt.petType] || 0) + 1;
+      }
+    });
+
     return {
       total: appointments.length,
       pending: getAppointmentsByStatus('pending').length,
       confirmed: getAppointmentsByStatus('confirmed').length,
       cancelled: getAppointmentsByStatus('cancelled').length,
       today: getTodayAppointments().length,
-      week: getWeekAppointments().length
+      week: getWeekAppointments().length,
+      upcoming: getUpcomingAppointments().length,
+      petTypeStats
     };
   };
 
@@ -150,6 +226,25 @@ export const useAppointments = () => {
       .map(apt => apt.time);
   };
 
+  // Buscar citas por nombre de mascota o propietario
+  const searchAppointments = (searchTerm) => {
+    if (!searchTerm.trim()) return appointments;
+    
+    const term = searchTerm.toLowerCase();
+    return appointments.filter(apt => 
+      apt.name.toLowerCase().includes(term) ||
+      (apt.petName && apt.petName.toLowerCase().includes(term)) ||
+      apt.service.toLowerCase().includes(term)
+    );
+  };
+
+  // Obtener citas por servicio
+  const getAppointmentsByService = (serviceType) => {
+    return appointments.filter(apt => 
+      apt.service.toLowerCase().includes(serviceType.toLowerCase())
+    );
+  };
+
   return {
     appointments,
     addAppointment,
@@ -157,11 +252,15 @@ export const useAppointments = () => {
     updateAppointmentStatus,
     getAppointmentsByDate,
     getAppointmentsByStatus,
+    getAppointmentsByPetType,
     getTodayAppointments,
     getWeekAppointments,
+    getUpcomingAppointments,
     getStats,
     isTimeSlotAvailable,
-    getOccupiedTimeSlots
+    getOccupiedTimeSlots,
+    searchAppointments,
+    getAppointmentsByService
   };
 };
 
